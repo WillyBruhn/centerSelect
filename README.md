@@ -1,6 +1,6 @@
 # centerSelect
 Selects a box-shaped isosurface around the active center.
-![alt text](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
+![alt text](https://github.com/WillyBruhn/centerSelect/blob/master/exampleImages/img.png)
 Call:
 ```bash
 ./centerSelect.sh _parametersFile_
