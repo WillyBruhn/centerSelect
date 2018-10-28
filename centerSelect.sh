@@ -12,7 +12,6 @@ echo "reading in parameters from $parametersFile"
 
 echo "found the following parameters..."
 echo "paramameter          value"
-exit
 NLS="-----------------------------------------------------------"
 echo $NLS
 #-----------------------------------------------------------------------------------
@@ -123,7 +122,11 @@ fi
 echo $NLS
 #-----------------------------------------------------------------------------------
 echo "still missing active centers of ..."
-$path2centerSelect./WhichMissing.sh $path2files
+missing=$($path2centerSelect./WhichMissing.sh $path2files)
+echo $missing
+
+cd $path2centerSelect
+echo "$missing" > "missing.txt"
 
 
 
