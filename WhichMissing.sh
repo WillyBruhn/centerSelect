@@ -1,6 +1,11 @@
 #!/bin/bash
 
 output="/home/willy/RedoxChallenges/centerSelect/Redox_old/Output/"
+output=$1
+#echo "-----------------------------------------------------------"
+#echo "WhichMissing.sh called on $output"
+#echo "-----------------------------------------------------------"
+
 
 cd $output
 

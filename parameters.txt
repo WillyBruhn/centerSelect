@@ -1,0 +1,6 @@
+path2centerSelect;/home/willy/RedoxChallenges/centerSelect/
+path2files;/home/willy/RedoxChallenges/centerSelect/Redox_old/Output/
+boxSize;30
+depth;10
+eps;0.3
+onlyDoMissing;true
