@@ -13,7 +13,7 @@ where _parametersFile_ specifies the file with the parameters. If you call
 ```
 without any parameter a file with the name "parameters.txt" in the same folder is read in.
 
-# ParametersFile
+## ParametersFile
 The _parametersFile_ contains the following parameters:
 
 | Parameter         | Value                                                      | Description                                                                                           |
@@ -25,7 +25,7 @@ The _parametersFile_ contains the following parameters:
 | eps               | 0.3                                                        | How much difference to the actual values -1.0 and 1.0 is tolerated.                                   |
 | onlyDoMissing     | true                                                       | only select the active centres for the folders that do not already contain a file "activeCenter.csv". |
 
-# Folder Structure
+## Folder Structure
 
 ```
 └─── Redox_old
@@ -58,6 +58,35 @@ The _parametersFile_ contains the following parameters:
 │       │         │   ...
 ```
 In each folder in Output **_centerSelecter.R_** creates a file **_active_center.csv_** that specifies the number of atoms that are within the active centre. The files **001_neg.pts** and **001_pos.pts** contain the points of the iso-surface around the active centre that can be used in the next step to compare the similarity of the iso-surfaces.
+
+## AA_utility
+### Active Center Motifes
+The file **AA_utility/motifs3letterCode.txt** contains the motifes of the active centers that the script will look for in the pdb-files.
+
+| CYS | ALA | HIS |
+|-----|-----|-----|
+| CYS | GLY | ALA |
+| CYS | ASN | HIS |
+| ... | ... | ... |
+
+### AAs.csv
+**AAs.csv** specifies the atom-chains that make up the aminoacids.
+
+| ALA | ARG | ... |
+|-----|-----|-----|
+| N   | N   | ... |
+| CA  | CA  | ... |
+| C   | C   | ... |
+| O   | O   | ... |
+| CB  | CB  | ... |
+| ... | ... | ... |
+
+### AA_lengths.csv
+**AA_lengths.csv** specifies the lenghts of the atom-chains of the amino-acids.
+
+| ALA | ARG | ASN | ASP | ... |
+|-----|-----|-----|-----|-----|
+| 10  | 24  | 14  | 14  | ... |
 
 
 (cool editor -> https://dillinger.io/)
