@@ -1,6 +1,9 @@
 # centerSelect
 Selects a box-shaped isosurface around the active center.
-![alt text](https://github.com/WillyBruhn/centerSelect/blob/master/exampleImages/img.png)
+//![alt text](https://github.com/WillyBruhn/centerSelect/blob/master/exampleImages/img.png)
+
+<img style="float: right;" src="https://github.com/WillyBruhn/centerSelect/blob/master/exampleImages/img.png">
+
 Call:
 ```bash
 ./centerSelect.sh _parametersFile_
@@ -56,5 +59,8 @@ The _parametersFile_ contains the following parameters:
 │       │         │   ...
 ```
 In each folder in Output **_centerSelecter.R_** creates a file **_active_center.csv_** that specifies the number of atoms that are within the active centre. The files **001_neg.pts** and **001_pos.pts** contain the points of the iso-surface around the active centre that can be used in the next step to compare the similarity of the iso-surfaces.
+
+
 (cool editor -> https://dillinger.io/)
+
 (table -> https://www.tablesgenerator.com/markdown_tables)
