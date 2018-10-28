@@ -1,6 +1,5 @@
 # centerSelect
 Selects a box-shaped isosurface around the active center.
-//![alt text](https://github.com/WillyBruhn/centerSelect/blob/master/exampleImages/img.png)
 
 <img style="float: right;" src="https://github.com/WillyBruhn/centerSelect/blob/master/exampleImages/img.png">
 
