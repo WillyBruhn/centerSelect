@@ -89,6 +89,10 @@ The file **AA_utility/motifs3letterCode.txt** contains the motifes of the active
 | 10  | 24  | 14  | 14  | ... |
 
 
+## Missing motifes
+The file **missing.txt** contains the names of the proteins for which the script did not find an acitve center.
+
+
 (cool editor -> https://dillinger.io/)
 
 (table -> https://www.tablesgenerator.com/markdown_tables)
