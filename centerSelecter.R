@@ -674,29 +674,35 @@ center_of_AA_chain <- function(start, end, prot_file){
 #####################################################################
 
 
-# path_to_centerSelect = "/home/willy/RedoxChallenges/centerSelect/"
-# folder = "/home/willy/RedoxChallenges/centerSelect/Redox_old/Output/"
-# prot_name="033"
+
+
+
+#--------------------------------------------------------------------
+# manual tests
+#--------------------------------------------------------------------
+# 
+# 
+# 
+# 
+# # fileName = paste(prot_name, "/", prot_name, ".pqr", sep = "")
+# 
+# path_to_centerSelect = "/home/sysgen/Documents/LWB/centerSelect/"
+# folder = "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/"
+# prot_name="091"
 # boxSize=30
 # depth=10
 # eps=0.3
-
+# 
+# path_to_centerSelect = "/home/willy/RedoxChallenges/centerSelect"
+#--------------------------------------------------------------------
 setwd(folder)
 
-
 dx_file = paste(prot_name, "/", prot_name, "_pot.dx", sep = "")
-
-# fileName = paste(prot_name, "/", prot_name, ".pqr", sep = "")
-
-
-fileName = paste(prot_name, "/", prot_name, "HeadOff.pqr", sep = "")
-
 outPath = paste(prot_name, "/", sep ="")
 
+fileName = paste(prot_name, "/", prot_name, "HeadOff.pqr", sep = "")
 prot_file = read.table(fileName)
 # prot_file <- head(prot_file,-1)
-
-path_to_centerSelect = "/home/willy/RedoxChallenges/centerSelect"
 
 AA_utility_path = paste(path_to_centerSelect, "/" ,"AA_utility", sep = "")
 fileNameMotives = "motifs3letterCode.txt"
@@ -737,6 +743,18 @@ for(i in 1:nrow(motives)){
 out
 
 
+# motives[55,1]
+
+# which("CYS" == reduced_chain$chain)
+# which("PRO" == reduced_chain$chain)
+# which("SER" == reduced_chain$chain)
+# which("CYS" == reduced_chain$chain)
+# 
+# m = AA_to_list(motives[49,])
+# 
+# find_motive_with_reduced_chain(reduced_chain, m)
+
+
 
 print(paste("writing to file ", outPath, "/", prot_name, "_active_center.csv ...", sep = ""))
 write.csv2(out, file = paste(outPath,"/",prot_name,"_active_center.csv",sep=""), row.names = F)
@@ -744,7 +762,6 @@ write.csv2(out, file = paste(outPath,"/",prot_name,"_active_center.csv",sep=""),
 
 center = c()
 center = center_of_AA_chain(out$start,out$end, prot_file)
-
 
 
 print(paste("reading dx-file ",folder, "/", dx_file, " ...", sep = ""))
