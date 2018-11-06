@@ -285,6 +285,8 @@ find_motive <- function(prot_file, motive, AA_lengths){
 
 find_motive_with_reduced_chain <- function(reduced_chain, motive){
   
+  print("find_motive_with_reduced_chain() ...")
+  
   hits_start = c()
   hits_end = c()
   
@@ -318,6 +320,19 @@ find_motive_with_reduced_chain <- function(reduced_chain, motive){
 }
 
 reduce_AA_chain <- function(prot_file, AA_lengths){
+  
+  # remove water.
+  # Should actually not contain water at this point...
+  water2beRemoved = which(as.character(prot_file$V4) == "HOH")
+  
+  if(length(water2beRemoved) != 0){
+    print(paste("removing water ", length(water2beRemoved)))
+    
+    prot_file = prot_file[-water2beRemoved,]
+  }
+  print(paste("length of prot_file is ", nrow(prot_file)))
+  
+  # return()
 
   valid = TRUE
   curr_AA = "NONE"
@@ -331,7 +346,7 @@ reduce_AA_chain <- function(prot_file, AA_lengths){
   while(i < length(prot_file$V4)){
     curr_AA = as.character(prot_file$V4[i])
     print(curr_AA)
-    
+      
     for(j in 1:((AA_lengths[curr_AA][1,] - 1))){
         print(paste(i, j, AA_lengths[curr_AA][1,], curr_AA, prot_file$V4[i+j-1]))
         if(i+j-1 < length(prot_file$V4) && prot_file$V4[i+j-1] != curr_AA){
@@ -688,7 +703,8 @@ center_of_AA_chain <- function(start, end, prot_file){
 # 
 # path_to_centerSelect = "/home/sysgen/Documents/LWB/centerSelect/"
 # folder = "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/"
-# prot_name="091"
+# prot_name="000_Ars"
+# # prot_name="084"
 # boxSize=30
 # depth=10
 # eps=0.3
@@ -728,10 +744,13 @@ reduced_chain[1]
 
 out = c()
 for(i in 1:nrow(motives)){
+# for(i in 63){
   
   # print(i)
   m = AA_to_list(motives[i,])
-  # print(m)
+  print(m[1])
+  
+  # print(which(reduced_chain$chain == m[1]))
 
   # o = find_motive(prot_file, m, AA_lengths)
   o = find_motive_with_reduced_chain(reduced_chain, m)
@@ -743,12 +762,13 @@ for(i in 1:nrow(motives)){
 out
 
 
-# motives[55,1]
+# motives[64,]
+# 
+# which("CYS" == reduced_chain$chain)
+# which("GLY" == reduced_chain$chain)
+# which("TYR" == reduced_chain$chain)
+# which("THR" == reduced_chain$chain)
 
-# which("CYS" == reduced_chain$chain)
-# which("PRO" == reduced_chain$chain)
-# which("SER" == reduced_chain$chain)
-# which("CYS" == reduced_chain$chain)
 # 
 # m = AA_to_list(motives[49,])
 # 
@@ -865,11 +885,14 @@ make_drawings <- function(){
 make_drawings()
 
 
-print(paste("writing to file ", outPath, "/", prot_name, "_pos.pts ...", sep = ""))
-write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,"_pos.pts",sep=""), row.names = F)
+pos_abrev = "_pot_positive.pts"
+neg_abrev = "_pot_negative.pts"
 
-print(paste("writing to file ", outPath, "/", prot_name, "_neg.pts ...", sep = ""))
-write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name,"_neg.pts",sep=""), row.names = F)
+print(paste("writing to file ", outPath, "/", prot_name, pos_abrev, " ...", sep = ""))
+write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,pos_abrev,sep=""), row.names = F)
+
+print(paste("writing to file ", outPath, "/", prot_name, neg_abrev, " ...", sep = ""))
+write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name,neg_abrev,sep=""), row.names = F)
 
 
 
