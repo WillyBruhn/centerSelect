@@ -53,6 +53,8 @@ do
 
 done < $parametersFile
 echo $NLS
+
+cp $parametersFile $path2files/$parametersFile
 #-----------------------------------------------------------------------------------
 
 #path2centerSelect="/home/willy/RedoxChallenges/centerSelect/"
@@ -106,16 +108,22 @@ if [ $onlyDoMissing == true ]; then
 
 	missingList=$($path2centerSelect./WhichMissing.sh $path2files)
 
-	while read -r d; do
+	while read -r d; do (
 		selectCenter $d
+    ) &
 	done <<< "$missingList"
+	
+	wait
 else 
 
 	echo "... performing for all folders"
 
-	for d in */ ; do
+	for d in */ ; do (
 		selectCenter $d
+    ) &
 	done
+	
+	wait
 fi
 
 

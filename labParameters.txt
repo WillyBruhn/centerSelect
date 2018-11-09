@@ -1,6 +1,6 @@
 path2centerSelect;/home/sysgen/Documents/LWB/centerSelect/
-path2files;/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/
-boxSize;30
+path2files;/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output20/
+boxSize;20
 depth;10
 eps;0.3
 onlyDoMissing;false

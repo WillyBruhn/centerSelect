@@ -1,21 +1,23 @@
 
+color Display Background black
 
 set start 483
 set end 534
 set radius 10
-if {$argc > 1} {
-    puts "processing $argv argc is $argc"
+# if {$argc > 1} {
+#     puts "processing $argv argc is $argc"
+# 
+# 	set start [lindex $argv 0 ]
+# 	set end [lindex $argv 1 ]
+# 	set radius [lindex $argv 2 ]
+# 
+# } else {
+#     puts "Too few arguments (found $argc). Need a parameters-file\n"
+#     
+# } 
 
-	set start [lindex $argv 0 ]
-	set end [lindex $argv 1 ]
-	set radius [lindex $argv 2 ]
-
-} else {
-    puts "Too few arguments (found $argc). Need a parameters-file\n"
-    
-} 
-
-set inputFolder "/home/willy/RedoxChallenges/centerSelect/014"
+# set inputFolder "/home/willy/RedoxChallenges/centerSelect/014"
+set inputFolder "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/014"
 
 mol new "$inputFolder/014.pqr" type {pqr} first 0 last -1 step 1 waitfor 1
 
@@ -25,7 +27,7 @@ mol new "$inputFolder/014.pqr" type {pqr} first 0 last -1 step 1 waitfor 1
 
 mol representation Isosurface
 mol addrep 1
-mol new {/home/willy/RedoxChallenges/centerSelect/014/014_pot.dx} type {dx} first 0 last -1 step 1 waitfor 1 volsets {0 }
+mol new {/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/014/014_pot.dx} type {dx} first 0 last -1 step 1 waitfor 1 volsets {0 }
 animate style Loop
 
 
@@ -72,13 +74,30 @@ set surf_c [vecadd $geom_c $second_v]
 
 ## puts "$geom_c[1]"
 
+mol selection all
+translate by 0 0 1
+
+rotate x by 30
+rotate y by -30
+rotate z by -15
+
+
+mol showrep 0 0 1
+mol showrep 0 1 1
+mol showrep 0 2 0
+mol showrep 0 3 0
+
+render snapshot "allPoints.tga"
+
 puts "drawing cylinder from $geom_c to $surf_c"
 draw cylinder $geom_c $surf_c radius $radius
+# draw box $geom_c $surf_c radius $radius
 
 
+render snapshot "activeCenter.tga"
 
 
-
+quit
 
 
 
