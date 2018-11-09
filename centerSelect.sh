@@ -45,6 +45,9 @@ do
 	elif [ "$parameter" == "onlyDoMissing" ]; then
 		onlyDoMissing=$value
 
+	elif [ "$parameter" == "path2output" ]; then
+		path2output=$value
+
 	else 
 		echo "corrupted format in $parametersfile/parameters.txt"
 		echo "aborting ..."
@@ -73,7 +76,7 @@ function selectCenter {
 
     filename="${d%/}"
 
-	f="$path2files/$filename/$filename"
+	f="$path2output/$filename/$filename"
 
 	rm "$f""HeadOff.pqr"
 
@@ -83,7 +86,7 @@ function selectCenter {
 	rm $f."tmp.pqr"
  
 	
-	$path2centerSelect/./centerSelecter.R $path2centerSelect $path2files $filename $boxSize $depth $eps
+	$path2centerSelect/./centerSelecter.R $path2centerSelect $path2output $filename $boxSize $depth $eps
 }
 
 
@@ -96,7 +99,10 @@ function selectCenter {
 
 #exit
 
-cd $path2files
+echo "copying files from $path2files to $path2output ..."
+cp -r $path2files $path2output
+
+cd $path2output
 
 #for d in */ ; do
 
@@ -106,7 +112,7 @@ if [ $onlyDoMissing == true ]; then
 	
 	echo "... performing only for missing folders"
 
-	missingList=$($path2centerSelect./WhichMissing.sh $path2files)
+	missingList=$($path2centerSelect./WhichMissing.sh $path2output)
 
 	while read -r d; do (
 		selectCenter $d
@@ -130,7 +136,7 @@ fi
 echo $NLS
 #-----------------------------------------------------------------------------------
 echo "still missing active centers of ..."
-missing=$($path2centerSelect./WhichMissing.sh $path2files)
+missing=$($path2centerSelect./WhichMissing.sh $path2output)
 echo $missing
 
 cd $path2centerSelect
