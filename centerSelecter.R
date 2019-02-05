@@ -686,6 +686,29 @@ center_of_AA_chain <- function(start, end, prot_file){
   
   return(c(x_m,y_m,z_m))
 }
+
+first_cystein_of_AA_chain <- function(start, end, prot_file){
+  
+  
+  # print(prot_file$V4[start:end])
+  
+  # check if the first base is a cystein
+  if(prot_file$V4[start] !="CYS"){
+    return(0)
+  } 
+  
+  # find end of the first cystein
+  endInd = start
+  while(prot_file$V4[endInd] =="CYS"){
+    endInd = endInd + 1
+  }
+  endInd = endInd-1
+  
+  # print(endInd)
+  # print(prot_file$V4[start:endInd])
+
+  return(center_of_AA_chain(start, endInd, prot_file))
+}
 #####################################################################
 
 
@@ -695,20 +718,21 @@ center_of_AA_chain <- function(start, end, prot_file){
 #--------------------------------------------------------------------
 # manual tests
 #--------------------------------------------------------------------
-# 
-# 
-# 
-# 
+# # 
+# # 
+# # 
+# # 
 # # fileName = paste(prot_name, "/", prot_name, ".pqr", sep = "")
-# 
+# # 
 # path_to_centerSelect = "/home/sysgen/Documents/LWB/centerSelect/"
-# folder = "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/"
-# prot_name="000_Ars"
+# # folder = "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/"
+# folder = "/home/willy/RedoxChallenges/Redox_old/Output/"
+# prot_name="016"
 # # prot_name="084"
-# boxSize=30
+# boxSize=-1
 # depth=10
 # eps=0.3
-# 
+# #
 # path_to_centerSelect = "/home/willy/RedoxChallenges/centerSelect"
 #--------------------------------------------------------------------
 setwd(folder)
@@ -761,6 +785,7 @@ for(i in 1:nrow(motives)){
 
 out
 
+prot_file[(out$start:out$end),]
 
 # motives[64,]
 # 
@@ -781,7 +806,18 @@ write.csv2(out, file = paste(outPath,"/",prot_name,"_active_center.csv",sep=""),
 
 
 center = c()
-center = center_of_AA_chain(out$start,out$end, prot_file)
+# changed this on 5.2.19
+# center1 = center_of_AA_chain(out$start,out$end, prot_file)
+
+center = first_cystein_of_AA_chain(out$start,out$end, prot_file)
+
+df_center = data.frame(t(center))
+names(df_center) = c("x","y","z")
+
+print(paste("writing to file ", outPath, "/", prot_name, "_active_center.pts ...", sep = ""))
+#write.csv2(df_center, file = paste(outPath,"/",prot_name,"_active_center.pts",sep=""), dec = ".", row.names = F)
+write.table(df_center, file = paste(outPath,"/",prot_name,"_active_center.pts",sep=""), dec = ".", row.names = F, sep = ";")
+
 
 
 print(paste("reading dx-file ",folder, "/", dx_file, " ...", sep = ""))
@@ -810,9 +846,31 @@ iso2 = my_createisosurf(dx_data = dxData, -1.0, eps = eps)
 
 # boxSize = 30
 # depth = -5
+pos_surf_near_act_cent = 0
+neg_surf_near_act_cent = 0
 
-pos_surf_near_act_cent = select_box_parallel_to_z(boxSize, depth, center, iso)
-neg_surf_near_act_cent = select_box_parallel_to_z(boxSize, depth, center, iso2)
+pos_abrev = "_pot_positive.pts"
+neg_abrev = "_pot_negative.pts"
+if(boxSize > 0){
+  pos_surf_near_act_cent = select_box_parallel_to_z(boxSize, depth, center, iso)
+  neg_surf_near_act_cent = select_box_parallel_to_z(boxSize, depth, center, iso2)
+  
+  print(paste("writing to file ", outPath, "/", prot_name, "_active_center_", pos_abrev, " ...", sep = ""))
+  write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,"_active_center_",pos_abrev,sep=""), row.names = F)
+  
+  print(paste("writing to file ", outPath, "/", prot_name, "_active_center_", neg_abrev, " ...", sep = ""))
+  write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name, "_active_center_",neg_abrev,sep=""), row.names = F)
+} else {
+  pos_surf_near_act_cent = iso
+  neg_surf_near_act_cent = iso2
+  
+  print(paste("writing to file ", outPath, "/", prot_name, pos_abrev, " ...", sep = ""))
+  write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,pos_abrev,sep=""), row.names = F)
+  
+  print(paste("writing to file ", outPath, "/", prot_name, neg_abrev, " ...", sep = ""))
+  write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name,neg_abrev,sep=""), row.names = F)
+}
+
 
 make_drawings <- function(){
   # svg(filename = paste(prot_name, "/active_center.svg", sep = ""),width = 8, height = 10.64)
@@ -885,14 +943,9 @@ make_drawings <- function(){
 make_drawings()
 
 
-pos_abrev = "_pot_positive.pts"
-neg_abrev = "_pot_negative.pts"
 
-print(paste("writing to file ", outPath, "/", prot_name, pos_abrev, " ...", sep = ""))
-write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,pos_abrev,sep=""), row.names = F)
 
-print(paste("writing to file ", outPath, "/", prot_name, neg_abrev, " ...", sep = ""))
-write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name,neg_abrev,sep=""), row.names = F)
+
 
 
 

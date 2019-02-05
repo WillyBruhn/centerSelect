@@ -1,6 +1,7 @@
 path2centerSelect;/home/willy/RedoxChallenges/centerSelect/
-path2files;/home/willy/RedoxChallenges/centerSelect/Redox_old/Output/
-boxSize;30
+path2files;/home/willy/RedoxChallenges/MasterThesis/IsoSurfSimilarity/data/Output/
+path2output;false
+boxSize;-1
 depth;10
 eps;0.3
-onlyDoMissing;true
+onlyDoMissing;false
