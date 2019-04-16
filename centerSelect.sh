@@ -99,10 +99,16 @@ function selectCenter {
 
 #exit
 
-echo "copying files from $path2files to $path2output ..."
-cp -r $path2files $path2output
+if [ $path2output != "false" ]; then
+	echo "copying files from $path2files to $path2output ..."
+	cp -r $path2files $path2output
 
-cd $path2output
+else
+	echo "using original files in $path2files ..."
+	path2output=$path2files
+fi
+
+cd $path2output 
 
 #for d in */ ; do
 
@@ -116,20 +122,20 @@ if [ $onlyDoMissing == true ]; then
 
 	while read -r d; do (
 		selectCenter $d
-    ) &
+    ) #&
 	done <<< "$missingList"
 	
-	wait
+	#wait
 else 
 
 	echo "... performing for all folders"
 
 	for d in */ ; do (
 		selectCenter $d
-    ) &
+    ) #&
 	done
 	
-	wait
+	#wait
 fi
 
 
