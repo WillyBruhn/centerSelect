@@ -730,28 +730,23 @@ first_cystein_of_AA_chain <- function(start, end, prot_file){
 # # 
 # # fileName = paste(prot_name, "/", prot_name, ".pqr", sep = "")
 # # 
-<<<<<<< HEAD
 # # path_to_centerSelect = "/home/sysgen/Documents/LWB/centerSelect/"
 # # # folder = "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/"
 # folder = "/home/willy/PredictingProteinInteractions/data/additionalPDBS_1/Output/"
 # prot_name="hTrx1_C73H"
-=======
 # path_to_centerSelect = "/home/sysgen/Documents/LWB/centerSelect/"
 # # folder = "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/"
 # folder = "/home/willy/RedoxChallenges/Redox_old/Output/"
 # prot_name="016"
->>>>>>> ea8bef811d9768a13c50918fe20e46110e0043a5
+
 # # prot_name="084"
 # boxSize=-1
 # depth=10
 # eps=0.3
-<<<<<<< HEAD
 # # #
 # path_to_centerSelect = "/home/willy/PredictingProteinInteractions/PreProcessingProteins/centerSelect/"
-=======
 # #
 # path_to_centerSelect = "/home/willy/RedoxChallenges/centerSelect"
->>>>>>> ea8bef811d9768a13c50918fe20e46110e0043a5
 #--------------------------------------------------------------------
 setwd(folder)
 
@@ -824,9 +819,7 @@ write.csv2(out, file = paste(outPath,"/",prot_name,"_active_center.csv",sep=""),
 
 
 center = c()
-<<<<<<< HEAD
 center = center_of_AA_chain(out$start,out$end, prot_file, normalized = TRUE)
-=======
 # changed this on 5.2.19
 # center1 = center_of_AA_chain(out$start,out$end, prot_file)
 
@@ -838,6 +831,28 @@ names(df_center) = c("x","y","z")
 print(paste("writing to file ", outPath, "/", prot_name, "_active_center.pts ...", sep = ""))
 #write.csv2(df_center, file = paste(outPath,"/",prot_name,"_active_center.pts",sep=""), dec = ".", row.names = F)
 write.table(df_center, file = paste(outPath,"/",prot_name,"_active_center.pts",sep=""), dec = ".", row.names = F, sep = ";")
+
+
+
+
+
+
+
+
+
+
+
+
+
+quit()
+#
+
+
+
+
+
+
+
 
 
 
@@ -959,24 +974,16 @@ make_drawings <- function(){
   dev.off()
 }
 
->>>>>>> ea8bef811d9768a13c50918fe20e46110e0043a5
 
 df_center = data.frame(t(center))
 names(df_center) = c("x","y","z")
 
-<<<<<<< HEAD
 print(paste("writing to file ", outPath, "/", prot_name, "_active_center.pts ...", sep = ""))
 #write.csv2(df_center, file = paste(outPath,"/",prot_name,"_active_center.pts",sep=""), dec = ".", row.names = F)
 write.table(df_center, file = paste(outPath,"/",prot_name,"_active_center.pts",sep=""), dec = ".", row.names = F, sep = ";")
-=======
 make_drawings()
 
 
-
-
-
-
->>>>>>> ea8bef811d9768a13c50918fe20e46110e0043a5
 
 
 #---------------------------------------------------------------------------------------
