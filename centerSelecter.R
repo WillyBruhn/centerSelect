@@ -679,10 +679,16 @@ my_createisosurf <- function(dx_data, level, eps){
 }
 
 
-center_of_AA_chain <- function(start, end, prot_file){
+center_of_AA_chain <- function(start, end, prot_file, normalized = TRUE){
   x_m = mean(prot_file$V6[start:end])
   y_m = mean(prot_file$V7[start:end])
   z_m = mean(prot_file$V8[start:end])
+  
+  if(normalized){
+    x_m = x_m/(max(prot_file$V6)-min(prot_file$V6))
+    y_m = y_m/(max(prot_file$V7)-min(prot_file$V7))
+    z_m = z_m/(max(prot_file$V8)-min(prot_file$V8))
+  }
   
   return(c(x_m,y_m,z_m))
 }
@@ -695,22 +701,22 @@ center_of_AA_chain <- function(start, end, prot_file){
 #--------------------------------------------------------------------
 # manual tests
 #--------------------------------------------------------------------
-# 
-# 
-# 
-# 
-# fileName = paste(prot_name, "/", prot_name, ".pqr", sep = "")
-# 
-# path_to_centerSelect = "/home/sysgen/Documents/LWB/centerSelect/"
-# # folder = "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/"
-# folder = "/home/willy/RedoxChallenges/Redox_old/Output/"
-# prot_name="016"
+# # 
+# # 
+# # 
+# # 
+# # fileName = paste(prot_name, "/", prot_name, ".pqr", sep = "")
+# # 
+# # path_to_centerSelect = "/home/sysgen/Documents/LWB/centerSelect/"
+# # # folder = "/home/sysgen/Documents/LWB/centerSelectTest/Redox/Output/"
+# folder = "/home/willy/PredictingProteinInteractions/data/additionalPDBS_1/Output/"
+# prot_name="hTrx1_C73H"
 # # prot_name="084"
 # boxSize=-1
 # depth=10
 # eps=0.3
-# #
-# path_to_centerSelect = "/home/willy/RedoxChallenges/centerSelect"
+# # #
+# path_to_centerSelect = "/home/willy/PredictingProteinInteractions/PreProcessingProteins/centerSelect/"
 #--------------------------------------------------------------------
 setwd(folder)
 
@@ -782,7 +788,7 @@ write.csv2(out, file = paste(outPath,"/",prot_name,"_active_center.csv",sep=""),
 
 
 center = c()
-center = center_of_AA_chain(out$start,out$end, prot_file)
+center = center_of_AA_chain(out$start,out$end, prot_file, normalized = TRUE)
 
 df_center = data.frame(t(center))
 names(df_center) = c("x","y","z")
@@ -792,133 +798,137 @@ print(paste("writing to file ", outPath, "/", prot_name, "_active_center.pts ...
 write.table(df_center, file = paste(outPath,"/",prot_name,"_active_center.pts",sep=""), dec = ".", row.names = F, sep = ";")
 
 
-
-print(paste("reading dx-file ",folder, "/", dx_file, " ...", sep = ""))
-dxData <- read.csv(file=paste(folder,"/",dx_file ,sep=""), sep=' ', skip= 11, header=F ,stringsAsFactors=FALSE,  check.names = FALSE)
-
-dxData <- head(dxData,-5)
-# sometimes 5 sometimes 10!!!
-
-dx_meta = read.csv(file=paste(folder,"/",dx_file ,sep=""), sep=' ', skip= 0, header=F ,stringsAsFactors=FALSE,  check.names = FALSE)
-
-gridCount = as.numeric(dx_meta$V6[5])
-origin = as.numeric(c(dx_meta$V2[6], dx_meta$V3[6], dx_meta$V4[6]))
-dx = as.numeric(c(dx_meta$V2[7], dx_meta$V3[7], dx_meta$V4[7]))
-dy = as.numeric(c(dx_meta$V2[8], dx_meta$V3[8], dx_meta$V4[8]))
-dz = as.numeric(c(dx_meta$V2[9], dx_meta$V3[9], dx_meta$V4[9]))
-
-lx = gridCount*dx[1]
-ly = gridCount*dy[2]
-lz = gridCount*dz[3]
-
-
-iso = my_createisosurf(dx_data = dxData, 1.0, eps = eps)
-iso2 = my_createisosurf(dx_data = dxData, -1.0, eps = eps)
-
-
-
-# boxSize = 30
-# depth = -5
-pos_surf_near_act_cent = 0
-neg_surf_near_act_cent = 0
-
-pos_abrev = "_pot_positive.pts"
-neg_abrev = "_pot_negative.pts"
-if(boxSize > 0){
-  pos_surf_near_act_cent = select_box_parallel_to_z(boxSize, depth, center, iso)
-  neg_surf_near_act_cent = select_box_parallel_to_z(boxSize, depth, center, iso2)
-  
-  print(paste("writing to file ", outPath, "/", prot_name, "_active_center_", pos_abrev, " ...", sep = ""))
-  write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,"_active_center_",pos_abrev,sep=""), row.names = F)
-  
-  print(paste("writing to file ", outPath, "/", prot_name, "_active_center_", neg_abrev, " ...", sep = ""))
-  write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name, "_active_center_",neg_abrev,sep=""), row.names = F)
-} else {
-  pos_surf_near_act_cent = iso
-  neg_surf_near_act_cent = iso2
-  
-  print(paste("writing to file ", outPath, "/", prot_name, pos_abrev, " ...", sep = ""))
-  write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,pos_abrev,sep=""), row.names = F)
-  
-  print(paste("writing to file ", outPath, "/", prot_name, neg_abrev, " ...", sep = ""))
-  write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name,neg_abrev,sep=""), row.names = F)
-}
-
-
-make_drawings <- function(){
-  # svg(filename = paste(prot_name, "/active_center.svg", sep = ""),width = 8, height = 10.64)
-  png(paste(prot_name, "/active_center.png", sep = ""))
-  par(mfrow = c(3,2))
-  
-  theta = 0
-  phi = 90
-  
-  border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
-  
-  plot_with_less_res(theta,phi,1,iso,TRUE)
-  plot_with_less_res(theta,phi,1,iso2,TRUE, "red")
-  
-  # points3D(active_centre$X, active_centre$Y, active_centre$Z, add = TRUE, col = "black")
-  
-  
-  border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
-  
-  plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
-  plot_with_less_res(theta,phi,1,pos_surf_near_act_cent,TRUE, "blue")
-  # plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
-  
-  draw_sel_box(boxSize, depth, center)
-  
-  
-  theta = 0
-  phi = 135
-  
-  border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
-  
-  plot_with_less_res(theta,phi,1,iso,TRUE)
-  plot_with_less_res(theta,phi,1,iso2,TRUE, "red")
-  
-  # points3D(active_centre$X, active_centre$Y, active_centre$Z, add = TRUE, col = "black")
-  
-  
-  border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
-  
-  plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
-  plot_with_less_res(theta,phi,1,pos_surf_near_act_cent,TRUE, "blue")
-  # plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
-  
-  draw_sel_box(boxSize, depth, center)
-  
-  theta = 0
-  phi = 180
-  
-  border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
-  
-  plot_with_less_res(theta,phi,1,iso,TRUE)
-  plot_with_less_res(theta,phi,1,iso2,TRUE, "red")
-  
-  # points3D(active_centre$X, active_centre$Y, active_centre$Z, add = TRUE, col = "black")
-  
-  
-  border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
-  
-  plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
-  plot_with_less_res(theta,phi,1,pos_surf_near_act_cent,TRUE, "blue")
-  # plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
-  
-  draw_sel_box(boxSize, depth, center)
-  
-  dev.off()
-}
-
-
-
-make_drawings()
-
-
-
-
-
-
-
-
+#---------------------------------------------------------------------------------------
+# pre 22.4.2019
+# we have a new way of generating the iso-surfaces
+#---------------------------------------------------------------------------------------
+# 
+# print(paste("reading dx-file ",folder, "/", dx_file, " ...", sep = ""))
+# dxData <- read.csv(file=paste(folder,"/",dx_file ,sep=""), sep=' ', skip= 11, header=F ,stringsAsFactors=FALSE,  check.names = FALSE)
+# 
+# dxData <- head(dxData,-5)
+# # sometimes 5 sometimes 10!!!
+# 
+# dx_meta = read.csv(file=paste(folder,"/",dx_file ,sep=""), sep=' ', skip= 0, header=F ,stringsAsFactors=FALSE,  check.names = FALSE)
+# 
+# gridCount = as.numeric(dx_meta$V6[5])
+# origin = as.numeric(c(dx_meta$V2[6], dx_meta$V3[6], dx_meta$V4[6]))
+# dx = as.numeric(c(dx_meta$V2[7], dx_meta$V3[7], dx_meta$V4[7]))
+# dy = as.numeric(c(dx_meta$V2[8], dx_meta$V3[8], dx_meta$V4[8]))
+# dz = as.numeric(c(dx_meta$V2[9], dx_meta$V3[9], dx_meta$V4[9]))
+# 
+# lx = gridCount*dx[1]
+# ly = gridCount*dy[2]
+# lz = gridCount*dz[3]
+# 
+# 
+# iso = my_createisosurf(dx_data = dxData, 1.0, eps = eps)
+# iso2 = my_createisosurf(dx_data = dxData, -1.0, eps = eps)
+# 
+# 
+# 
+# # boxSize = 30
+# # depth = -5
+# pos_surf_near_act_cent = 0
+# neg_surf_near_act_cent = 0
+# 
+# pos_abrev = "_pot_positive.pts"
+# neg_abrev = "_pot_negative.pts"
+# if(boxSize > 0){
+#   pos_surf_near_act_cent = select_box_parallel_to_z(boxSize, depth, center, iso)
+#   neg_surf_near_act_cent = select_box_parallel_to_z(boxSize, depth, center, iso2)
+#   
+#   print(paste("writing to file ", outPath, "/", prot_name, "_active_center_", pos_abrev, " ...", sep = ""))
+#   write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,"_active_center_",pos_abrev,sep=""), row.names = F)
+#   
+#   print(paste("writing to file ", outPath, "/", prot_name, "_active_center_", neg_abrev, " ...", sep = ""))
+#   write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name, "_active_center_",neg_abrev,sep=""), row.names = F)
+# } else {
+#   pos_surf_near_act_cent = iso
+#   neg_surf_near_act_cent = iso2
+#   
+#   print(paste("writing to file ", outPath, "/", prot_name, pos_abrev, " ...", sep = ""))
+#   write.csv2(pos_surf_near_act_cent, file = paste(outPath,"/",prot_name,pos_abrev,sep=""), row.names = F)
+#   
+#   print(paste("writing to file ", outPath, "/", prot_name, neg_abrev, " ...", sep = ""))
+#   write.csv2(neg_surf_near_act_cent, file = paste(outPath,"/",prot_name,neg_abrev,sep=""), row.names = F)
+# }
+# 
+# 
+# make_drawings <- function(){
+#   # svg(filename = paste(prot_name, "/active_center.svg", sep = ""),width = 8, height = 10.64)
+#   png(paste(prot_name, "/active_center.png", sep = ""))
+#   par(mfrow = c(3,2))
+#   
+#   theta = 0
+#   phi = 90
+#   
+#   border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
+#   
+#   plot_with_less_res(theta,phi,1,iso,TRUE)
+#   plot_with_less_res(theta,phi,1,iso2,TRUE, "red")
+#   
+#   # points3D(active_centre$X, active_centre$Y, active_centre$Z, add = TRUE, col = "black")
+#   
+#   
+#   border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
+#   
+#   plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
+#   plot_with_less_res(theta,phi,1,pos_surf_near_act_cent,TRUE, "blue")
+#   # plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
+#   
+#   draw_sel_box(boxSize, depth, center)
+#   
+#   
+#   theta = 0
+#   phi = 135
+#   
+#   border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
+#   
+#   plot_with_less_res(theta,phi,1,iso,TRUE)
+#   plot_with_less_res(theta,phi,1,iso2,TRUE, "red")
+#   
+#   # points3D(active_centre$X, active_centre$Y, active_centre$Z, add = TRUE, col = "black")
+#   
+#   
+#   border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
+#   
+#   plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
+#   plot_with_less_res(theta,phi,1,pos_surf_near_act_cent,TRUE, "blue")
+#   # plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
+#   
+#   draw_sel_box(boxSize, depth, center)
+#   
+#   theta = 0
+#   phi = 180
+#   
+#   border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
+#   
+#   plot_with_less_res(theta,phi,1,iso,TRUE)
+#   plot_with_less_res(theta,phi,1,iso2,TRUE, "red")
+#   
+#   # points3D(active_centre$X, active_centre$Y, active_centre$Z, add = TRUE, col = "black")
+#   
+#   
+#   border3D(origin[1],origin[2],origin[3], origin[1] +lx, origin[2]+ly, origin[3]+lz, add = FALSE, col = "black", theta = theta, phi = phi)
+#   
+#   plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
+#   plot_with_less_res(theta,phi,1,pos_surf_near_act_cent,TRUE, "blue")
+#   # plot_with_less_res(theta,phi,1,neg_surf_near_act_cent,TRUE, "red")
+#   
+#   draw_sel_box(boxSize, depth, center)
+#   
+#   dev.off()
+# }
+# 
+# 
+# 
+# make_drawings()
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
