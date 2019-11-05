@@ -295,7 +295,7 @@ find_motive <- function(prot_file, motive, AA_lengths){
 
 find_motive_with_reduced_chain <- function(reduced_chain, motive){
   
-  print("find_motive_with_reduced_chain() ...")
+  # print("find_motive_with_reduced_chain() ...")
   
   hits_start = c()
   hits_end = c()
@@ -303,26 +303,31 @@ find_motive_with_reduced_chain <- function(reduced_chain, motive){
   # find start-anchors of motive
   start_ind = which(reduced_chain$chain == motive[1])
   
+  # we find the anchors 
   print(start_ind)
+  
   
   for(curr_start in start_ind){
     valid = TRUE
     
     print(curr_start)
-    for(j in 1:length(motive)){
-      
-      if(motive[j] != reduced_chain$chain[curr_start+j-1]){
-        print(paste(motive[j], "!=", reduced_chain$chain[curr_start+j-1]))
-        valid = FALSE
+    
+    if(curr_start+length(motive) < length(reduced_chain$chain)){
+      for(j in 1:length(motive)){
+        
+        if(motive[j] != reduced_chain$chain[curr_start+j-1]){
+          print(paste(motive[j], "!=", reduced_chain$chain[curr_start+j-1]))
+          valid = FALSE
+        }
       }
-    }
-    if(valid == TRUE){
-      print(paste("Valid candidate found at", curr_start, sep = " "))
-      # hits = c(hits,curr_start)
-      hits_start = c(hits_start,reduced_chain$start_indices[curr_start])
-      hits_end = c(hits_end, reduced_chain$end_indices[curr_start + (length(motive)-1)])
-      
-    }
+      if(valid == TRUE){
+        print(paste("Valid candidate found at", curr_start, sep = " "))
+        # hits = c(hits,curr_start)
+        hits_start = c(hits_start,reduced_chain$start_indices[curr_start])
+        hits_end = c(hits_end, reduced_chain$end_indices[curr_start + (length(motive)-1)])
+        
+      }
+      }
   }
   
   hits = data.frame("start" = hits_start, "end" = hits_end)
@@ -355,21 +360,21 @@ reduce_AA_chain <- function(prot_file, AA_lengths){
   i = 1
   while(i < length(prot_file$V4)){
     curr_AA = as.character(prot_file$V4[i])
-    print(curr_AA)
+    # print(curr_AA)
       
     for(j in 1:((AA_lengths[curr_AA][1,] - 1))){
-        print(paste(i, j, AA_lengths[curr_AA][1,], curr_AA, prot_file$V4[i+j-1]))
+        # print(paste(i, j, AA_lengths[curr_AA][1,], curr_AA, prot_file$V4[i+j-1]))
         if(i+j-1 < length(prot_file$V4) && prot_file$V4[i+j-1] != curr_AA){
           
           # chain was shorter than the reference
           if(j < 7){
-            print("chain was shorter than the reference")
+            # print("chain was shorter than the reference")
             break
           }
           
           # chain was fine, and the next AA starts
           else if(abs(j - AA_lengths[curr_AA][1,]) < 4){
-            print("chain was fine, and the next AA starts")
+            # print("chain was fine, and the next AA starts")
 
             # chain = c(chain, curr_AA)
 
@@ -381,8 +386,8 @@ reduce_AA_chain <- function(prot_file, AA_lengths){
           else {
             
             valid = FALSE
-            print("pqr-file is not conform with the specified lengths of the AAs!")
-            print(paste("expected lenght of", curr_AA, AA_lengths[curr_AA][1,], "; actual length: ", j, "at position ", i))
+            # print("pqr-file is not conform with the specified lengths of the AAs!")
+            # print(paste("expected lenght of", curr_AA, AA_lengths[curr_AA][1,], "; actual length: ", j, "at position ", i))
             
             return(FALSE)
           }
@@ -398,7 +403,7 @@ reduce_AA_chain <- function(prot_file, AA_lengths){
     
     # chain was fine, and the next AA starts
     if(abs(j - AA_lengths[curr_AA][1,]) < 4){
-      print("chain was fine, and the next AA starts")
+      # print("chain was fine, and the next AA starts")
       
       chain = c(chain, curr_AA)
       start_indices = c(start_indices, i)
@@ -412,6 +417,8 @@ reduce_AA_chain <- function(prot_file, AA_lengths){
     
     # i = i + AA_lengths[curr_AA][1,]
   }
+  
+  # print(chain)
   
   l = list("chain" = chain, "start_indices" = start_indices, "end_indices" = end_indices)
   
@@ -833,6 +840,8 @@ for(i in 1:nrow(motives)){
 
 out
 
+print(reduced_chain$chain)
+
 prot_file[(out$start:out$end),]
 
 # motives[64,]
@@ -846,6 +855,8 @@ prot_file[(out$start:out$end),]
 # m = AA_to_list(motives[49,])
 # 
 # find_motive_with_reduced_chain(reduced_chain, m)
+
+
 
 
 
