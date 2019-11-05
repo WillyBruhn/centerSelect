@@ -47,6 +47,9 @@ do
 
 	elif [ "$parameter" == "path2output" ]; then
 		path2output=$value
+		
+    elif [ "$parameter" == "SELECTBOX" ]; then
+		SELECTBOX=$value
 
 	else 
 		echo "corrupted format in $parametersfile/parameters.txt"
@@ -86,7 +89,7 @@ function selectCenter {
 	rm $f."tmp.pqr"
  
 	
-	$path2centerSelect/./centerSelecter.R $path2centerSelect $path2output $filename $boxSize $depth $eps
+	$path2centerSelect/./centerSelecter.R $path2centerSelect $path2output $filename $boxSize $depth $eps $SELECTBOX
 }
 
 
@@ -141,6 +144,7 @@ fi
 
 echo $NLS
 #-----------------------------------------------------------------------------------
+echo $path2output
 echo "still missing active centers of ..."
 missing=$($path2centerSelect./WhichMissing.sh $path2output)
 echo $missing

@@ -24,6 +24,7 @@ The _parametersFile_ contains the following parameters:
 | depth             | 10                                                         | the box is drawn along the Z-axis.                                                                    |
 | eps               | 0.3                                                        | How much difference to the actual values -1.0 and 1.0 is tolerated.                                   |
 | onlyDoMissing     | true                                                       | only select the active centres for the folders that do not already contain a file "activeCenter.csv". |
+| SELECTBOX     | false                                                       | do you want to select a subset of points that are in the box? the pts-file will then contain these points. |
 
 ## Folder Structure
 
