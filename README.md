@@ -3,6 +3,20 @@ Selects a box-shaped isosurface around the active center.
 
 <img style="float: right;" src="https://github.com/WillyBruhn/centerSelect/blob/master/exampleImages/img.png">
 
+The active center is approximated as a single point obtained as the geometric center of all the atoms from the active center. 
+
+## 1. Finding the position of the active center
+In the context of this implementation a motife is a vector consisting of multiple aminoacids e.g. *CYS GLY ALA*. A set of motives is specified by the user. Then the pqr-file is scanned for any potential motifes. A list of found motives is returned. When multiple motifes are found the first occurence is taken. Then the atom-coordinates from the found motive are extracted. The geometrical center is then calculated. This *geometric center* is used as the approximation for the active center.
+
+## 2. Iso-surface in close proximity to the active center
+Given a single point (*p.x*,*p.y*,*p.z*) in 3D representing the active center a subset of the iso-surface is calculated as follows:
+Given a parameter *boxSize* and *depth* a square centered in *p* with height *boxSize*/2 and width *boxSize*/2 can be obtained. Then extruding this square along the z-axis from the front-side of the box to a position at *p.z* -*depth* one obtains a cuboid.
+Then all points from the iso-surface that lie within this box are used for further investigation.
+
+For our paper we used as parameters *boxSize* = 30 and *depth* = 15 angstrom.
+
+
+
 Call:
 ```bash
 ./centerSelect.sh _parametersFile_
